@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 407bc68d299748449bbf7f48ee690f8d
+ShaderImporter:
+  defaultTextures: []
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 145489
+  packageName: Arcade Car Controller (Lite version)
+  packageVersion: 1.5.02
+  assetPath: Assets/ACC_Lite/TextMesh Pro/Resources/Shaders/TMPro.cginc
+  uploadId: 466643
