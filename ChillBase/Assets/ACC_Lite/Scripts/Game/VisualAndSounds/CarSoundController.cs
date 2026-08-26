@@ -26,7 +26,7 @@ public class CarSoundController :MonoBehaviour
 	float MaxRPM { get { return CarController.GetMaxRPM; } }
 	float EngineRPM { get { return CarController.EngineRPM; } }
 
-	private void Awake ()
+    private void Awake ()
 	{
 		CarController = GetComponent<CarController> ();
 		CarController.BackFireAction += PlayBackfire;
@@ -38,8 +38,17 @@ public class CarSoundController :MonoBehaviour
 		//Engine PRM sound
 		EngineSource.pitch = (EngineRPM / MaxRPM) + PitchOffset;
 
-		//Slip sound logic
-		if (CarController.CurrentMaxSlip > MinSlipSound
+        if (EngineRPM > 0.1f)
+        {
+            EngineSource.volume = 1f;
+        }
+        else
+        {
+            EngineSource.volume = 0f;
+        }
+
+        //Slip sound logic
+        if (CarController.CurrentMaxSlip > MinSlipSound
 		)
 		{
 			if (!SlipSource.isPlaying)
