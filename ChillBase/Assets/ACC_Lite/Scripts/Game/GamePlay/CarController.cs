@@ -10,7 +10,12 @@ using UnityEngine;
 public class CarController :MonoBehaviour
 {
 
-	[SerializeField] Wheel FrontLeftWheel;
+    [Header("Система зажигания")]
+    public bool HasKey = false;
+
+
+    [Header("Wheels")]
+    [SerializeField] Wheel FrontLeftWheel;
 	[SerializeField] Wheel FrontRightWheel;
 	[SerializeField] Wheel RearLeftWheel;
 	[SerializeField] Wheel RearRightWheel;
@@ -167,12 +172,17 @@ public class CarController :MonoBehaviour
 		{
 			Wheels[i].UpdateVisual ();
 		}
-	}
+
+        if (Input.GetKeyDown(KeyCode.K))
+		{
+            HasKey = true;
+        }
+    }
 
 	private void FixedUpdate ()
 	{
 
-		CurrentSpeed = RB.velocity.magnitude;
+		CurrentSpeed = RB.linearVelocity.magnitude;
 
 		UpdateSteerAngleLogic ();
 		UpdateRpmAndTorqueLogic ();
@@ -219,7 +229,7 @@ public class CarController :MonoBehaviour
 	{
 		var needHelp = SpeedInHour > MinSpeedForSteerHelp && CarDirection > 0;
 		float targetAngle = 0;
-		VelocityAngle = -Vector3.SignedAngle (RB.velocity, transform.TransformDirection (Vector3.forward), Vector3.up);
+		VelocityAngle = -Vector3.SignedAngle (RB.linearVelocity, transform.TransformDirection (Vector3.forward), Vector3.up);
 
 		if (needHelp)
 		{
@@ -281,7 +291,18 @@ public class CarController :MonoBehaviour
 	void UpdateRpmAndTorqueLogic ()
 	{
 
-		if (InCutOff)
+        if (!HasKey)
+        {
+            EngineRPM = 0f;
+
+            for (int i = FirstDriveWheel; i <= LastDriveWheel; i++)
+            {
+                Wheels[i].WheelCollider.motorTorque = 0f;
+            }
+            return;
+        }
+
+        if (InCutOff)
 		{
 			if (CutOffTimer > 0)
 			{
@@ -449,7 +470,7 @@ public class CarController :MonoBehaviour
 	private void OnDrawGizmosSelected ()
 	{
 		var centerPos = transform.position;
-		var velocity = transform.position + (Vector3.ClampMagnitude (RB.velocity, 4));
+		var velocity = transform.position + (Vector3.ClampMagnitude (RB.linearVelocity, 4));
 		var forwardPos = transform.TransformPoint (Vector3.forward * 4);
 
 		Gizmos.color = Color.green;
